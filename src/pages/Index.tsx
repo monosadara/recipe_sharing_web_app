@@ -4,6 +4,7 @@ import { RecipeCard } from "@/components/RecipeCard";
 import { RecipeDetail } from "@/components/RecipeDetail";
 import { RecipeFilters, CategoryFilter, DifficultyFilter } from "@/components/RecipeFilters";
 import { RecipeForm } from "@/components/RecipeForm";
+import { SearchBar } from "@/components/SearchBar";
 import { useSupabaseRecipes, RecipeWithRatings } from "@/hooks/useSupabaseRecipes";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -26,14 +27,28 @@ const Index = () => {
   const [showRecipeForm, setShowRecipeForm] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [difficultyFilter, setDifficultyFilter] = useState<DifficultyFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Apply filters
   let displayedRecipes = showBookmarksOnly ? getBookmarkedRecipes() : recipes;
 
+  // Search filter
+  if (searchQuery.trim()) {
+    const query = searchQuery.toLowerCase();
+    displayedRecipes = displayedRecipes.filter((recipe) => 
+      recipe.title.toLowerCase().includes(query) ||
+      recipe.description?.toLowerCase().includes(query) ||
+      recipe.category.toLowerCase().includes(query) ||
+      recipe.ingredients.some(ing => ing.toLowerCase().includes(query))
+    );
+  }
+
+  // Category filter
   if (categoryFilter !== "all") {
     displayedRecipes = displayedRecipes.filter((r) => r.category === categoryFilter);
   }
 
+  // Difficulty filter
   if (difficultyFilter !== "all") {
     displayedRecipes = displayedRecipes.filter((r) => r.difficulty === difficultyFilter);
   }
@@ -41,6 +56,7 @@ const Index = () => {
   const handleResetFilters = () => {
     setCategoryFilter("all");
     setDifficultyFilter("all");
+    setSearchQuery("");
   };
 
   const handleCreateRecipe = async (data: {
@@ -135,7 +151,7 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
-        <section className="text-center mb-12 animate-slide-up">
+        <section className="text-center mb-8 animate-slide-up">
           <h2 className="font-heading text-4xl md:text-5xl font-bold mb-4">
             {showBookmarksOnly ? "Your Saved Recipes" : "Discover Delicious Recipes"}
           </h2>
@@ -151,14 +167,30 @@ const Index = () => {
           )}
         </section>
 
-        {/* Filters */}
-        <RecipeFilters
-          categoryFilter={categoryFilter}
-          difficultyFilter={difficultyFilter}
-          onCategoryChange={setCategoryFilter}
-          onDifficultyChange={setDifficultyFilter}
-          onReset={handleResetFilters}
-        />
+        {/* Search Bar and Filters */}
+        <div className="mb-8 space-y-4">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+            <SearchBar 
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search recipes by name, ingredients, or category..."
+            />
+            <RecipeFilters
+              categoryFilter={categoryFilter}
+              difficultyFilter={difficultyFilter}
+              onCategoryChange={setCategoryFilter}
+              onDifficultyChange={setDifficultyFilter}
+              onReset={handleResetFilters}
+            />
+          </div>
+          
+          {/* Results count */}
+          {(searchQuery || categoryFilter !== "all" || difficultyFilter !== "all") && (
+            <p className="text-sm text-muted-foreground">
+              Found {displayedRecipes.length} recipe{displayedRecipes.length !== 1 ? 's' : ''}
+            </p>
+          )}
+        </div>
 
         {/* Recipe Grid */}
         {displayedRecipes.length === 0 ? (
@@ -166,13 +198,17 @@ const Index = () => {
             <p className="text-xl text-muted-foreground mb-4">
               {showBookmarksOnly
                 ? "No saved recipes yet"
-                : categoryFilter !== "all" || difficultyFilter !== "all"
-                ? "No recipes match your filters"
+                : searchQuery || categoryFilter !== "all" || difficultyFilter !== "all"
+                ? "No recipes match your search or filters"
                 : "No recipes found"}
             </p>
-            {showBookmarksOnly && (
+            {showBookmarksOnly ? (
               <p className="text-muted-foreground">
                 Start exploring and bookmark recipes you love!
+              </p>
+            ) : (
+              <p className="text-muted-foreground">
+                Try adjusting your search terms or filters
               </p>
             )}
           </div>
