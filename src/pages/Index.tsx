@@ -169,7 +169,7 @@ const Index = () => {
 
         {/* Search Bar and Filters */}
         <div className="mb-8 space-y-4">
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <SearchBar 
               value={searchQuery}
               onChange={setSearchQuery}
@@ -186,7 +186,7 @@ const Index = () => {
           
           {/* Results count */}
           {(searchQuery || categoryFilter !== "all" || difficultyFilter !== "all") && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground text-center">
               Found {displayedRecipes.length} recipe{displayedRecipes.length !== 1 ? 's' : ''}
             </p>
           )}

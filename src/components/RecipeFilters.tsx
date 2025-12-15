@@ -47,15 +47,15 @@ export function RecipeFilters({
   const hasActiveFilters = categoryFilter !== "all" || difficultyFilter !== "all";
 
   return (
-    <div className="flex flex-wrap items-center gap-3 mb-8">
-      <div className="flex items-center gap-2 text-muted-foreground">
+    <div className="flex flex-wrap items-center gap-3">
+      <div className="flex items-center gap-2 text-muted-foreground h-11">
         <Filter className="w-4 h-4" />
-        <span className="text-sm font-medium">Filter by:</span>
+        <span className="text-sm font-medium">Filter:</span>
       </div>
 
       <Select value={categoryFilter} onValueChange={(value) => onCategoryChange(value as CategoryFilter)}>
         <SelectTrigger className={cn(
-          "w-[160px] bg-card",
+          "w-[160px] h-11 bg-card",
           categoryFilter !== "all" && "border-primary text-primary"
         )}>
           <SelectValue placeholder="Category" />
@@ -71,7 +71,7 @@ export function RecipeFilters({
 
       <Select value={difficultyFilter} onValueChange={(value) => onDifficultyChange(value as DifficultyFilter)}>
         <SelectTrigger className={cn(
-          "w-[140px] bg-card",
+          "w-[140px] h-11 bg-card",
           difficultyFilter !== "all" && "border-primary text-primary"
         )}>
           <SelectValue placeholder="Difficulty" />
@@ -90,7 +90,7 @@ export function RecipeFilters({
           variant="ghost"
           size="sm"
           onClick={onReset}
-          className="text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground h-11"
         >
           Clear filters
         </Button>

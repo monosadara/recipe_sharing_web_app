@@ -61,16 +61,20 @@ export function Header({
     <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-border/50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
+          {/* Logo - Now Clickable */}
+          {/* Logo - Now Clickable */}
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer"
+          >
             <div className="p-2 bg-primary/10 rounded-xl">
               <ChefHat className="w-7 h-7 text-primary" />
             </div>
-            <div>
+            <div className="text-left">
               <h1 className="font-heading text-2xl font-bold">RecipeVault</h1>
               <p className="text-xs text-muted-foreground">Share & discover recipes</p>
             </div>
-          </div>
+          </button>
 
           {/* Actions */}
           <div className="flex items-center gap-3">
